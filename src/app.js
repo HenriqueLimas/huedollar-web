@@ -35,6 +35,14 @@
       console.error(error);
     });
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then(function () {
+        console.log('Service worker registered');
+      });
+  }
+
   function startLoading () {
     requestAnimationFrame(function () {
       ui.refreshContainer.classList.add('hue-refresh--is-loading');
@@ -69,31 +77,57 @@
     });
   }
 
-  function fetchRate (base, to) {
-    return fetch(API_RATE + '?alt=json&moedas=' + base)
-      .then(function (response) {
-        return response.json();
-      })
+  function fetchFromNetworkRate (base, callback) {
+    var url = apiUrl(base);
+    // Make the XHR to get the data, then update the card
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+      if (request.readyState === XMLHttpRequest.DONE) {
+        if (request.status === 200) {
+          var response = JSON.parse(request.response);
+          callback(response);
+        }
+      }
+    };
+
+    request.open('GET', url);
+    request.send();
   }
 
   function updateRates (state) {
+    var url = apiUrl(state.base);
+    var hasPendingRequest = true;
     startLoading();
 
-    fetchRate(state.base, state.to)
-      .then(function (data) {
-        var currency = data.valores[state.base];
-        state.rate = formatNumber(currency.valor);
-        state.rate_payoneer = formatNumber(state.rate * 0.98);
-        state.last_quote = formatDate(timestampToDate(currency.ultima_consulta));
-
-        localforage.setItem(dbKeys.rates, state);
-
-        return state;
+    if ('caches' in window) {
+      caches.match(url).then(function (response) {
+        if (response) {
+          response.json().then(function (data) {
+            if (hasPendingRequest) {
+              updateStateRate(data);
+            }
+          })
+        }
       })
-      .then(function (state) {
-        updateRatesUi(state);
-        stopLoading();
-      });
+    }
+
+    fetchFromNetworkRate(state.base, updateStateRate)
+
+    function updateStateRate (data) {
+      var currency = data.valores[state.base];
+      state.rate = formatNumber(currency.valor);
+      state.rate_payoneer = formatNumber(state.rate * 0.98);
+      state.last_quote = formatDate(timestampToDate(currency.ultima_consulta));
+
+      localforage.setItem(dbKeys.rates, state);
+      updateRatesUi(state);
+      stopLoading();
+      hasPendingRequest = false;
+    }
+  }
+
+  function apiUrl (base) {
+    return API_RATE + '?alt=json&moedas=' + state.base;
   }
 
   function formatNumber (number) {
