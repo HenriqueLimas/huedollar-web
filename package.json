@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "python -m SimpleHTTPServer",
+    "build:html:prod": "html-minifier index.html --collapse-whitespace > dist/index.html",
+    "build:js:prod": "mkdir -p dist/src && uglifyjs src/app.js --compress > dist/src/main.js && cp -r libs dist/",
+    "build:css:prod": "mkdir -p dist/styles && postcss styles/styles.css --use autoprefixer cssnano --no-map -o dist/styles/styles.css",
+    "build:prod": "npm run build:js:prod && npm run build:css:prod && npm run build:html:prod",
+    "deploy:prod": "npm run build:prod && firebase deploy"
+  },
+  "devDependencies": {
+    "autoprefixer": "^7.1.1",
+    "cssnano": "^3.10.0",
+    "firebase": "^4.0.0",
+    "html-minifier": "^3.5.0",
+    "postcss-cli": "^4.0.0",
+    "uglify-js": "^3.0.9"
+  }
+}

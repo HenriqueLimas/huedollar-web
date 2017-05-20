@@ -1,0 +1,98 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FFF;
+  font-family: 'Roboto', sans-serif;
+}
+
+.hue-success {
+  background-color: #4CAF50;
+}
+
+.hue-warn {
+  background-color: #FFC107;
+}
+
+.hue-danger {
+  background-color: #F44336;
+}
+
+.hue-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hue-container > * {
+  margin-bottom: 20px;
+}
+
+.hue-currency-description {
+  font-size: 3em;
+  color: #3F51B5
+}
+
+.hue-current-rate {
+  display: flex;
+  flex-direction: column;
+}
+
+.hue-rate {
+  font-size: 4em;
+
+}
+
+.hue-rate--sm {
+  font-size: 1em;
+}
+
+.hue-refresh {
+  margin-top: 20px;
+  transform: scale(2);
+}
+
+.hue-refresh--btn {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.hue-refresh--loading-container {
+  display: none;
+}
+
+.hue-refresh--loading {
+  animation-duration: 3s;
+  animation-name: loading;
+  animation-iteration-count: infinite;
+}
+
+.hue-refresh--is-loading > .hue-refresh--btn {
+  display: none;
+}
+
+.hue-refresh--is-loading > .hue-refresh--loading-container {
+  display: block;
+}
+
+@keyframes loading {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
