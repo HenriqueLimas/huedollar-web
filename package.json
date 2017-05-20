@@ -4,9 +4,11 @@
     "build:html:prod": "html-minifier index.html --collapse-whitespace > dist/index.html",
     "build:libs:prod": "cp -r libs dist/",
     "build:sw:prod": "cp service-worker.js dist/",
+    "build:manifest:prod": "cp manifest.json dist/",
+    "build:img:prod": "cp -r images dist/",
     "build:js:prod": "mkdir -p dist/src && uglifyjs src/app.js --compress > dist/src/app.js",
     "build:css:prod": "mkdir -p dist/styles && postcss styles/styles.css --use autoprefixer cssnano --no-map -o dist/styles/styles.css",
-    "build:prod": "npm run build:js:prod && npm run build:libs:prod && npm run build:sw:prod && npm run build:css:prod && npm run build:html:prod",
+    "build:prod": "npm run build:js:prod && npm run build:libs:prod && npm run build:sw:prod && npm run build:css:prod && npm run build:html:prod && npm run build:img:prod && npm run build:manifest:prod",
     "deploy:prod": "npm run build:prod && firebase deploy"
   },
   "devDependencies": {
