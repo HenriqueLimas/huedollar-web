@@ -9,7 +9,7 @@ var filesToCache = [
 ];
 
 
-var rateAPIUrlBase = 'http://api.promasters.net.br/cotacao/v1/valores';
+var rateAPIUrlBase = 'https://api.fixer.io/latest';
 
 self.addEventListener('install', function (e) {
   console.log('[ServiceWorker] Install');

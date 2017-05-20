@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var API_RATE = 'http://api.promasters.net.br/cotacao/v1/valores';
+  var API_RATE = 'https://api.fixer.io/latest';
   var state = {
     base: 'USD',
     to: 'BRL',
@@ -77,8 +77,8 @@
     });
   }
 
-  function fetchFromNetworkRate (base, callback) {
-    var url = apiUrl(base);
+  function fetchFromNetworkRate (base, to, callback) {
+    var url = apiUrl(base, to);
     // Make the XHR to get the data, then update the card
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
@@ -95,7 +95,7 @@
   }
 
   function updateRates (state) {
-    var url = apiUrl(state.base);
+    var url = apiUrl(state.base, state.to);
     var hasPendingRequest = true;
     startLoading();
 
@@ -111,13 +111,13 @@
       })
     }
 
-    fetchFromNetworkRate(state.base, updateStateRate)
+    fetchFromNetworkRate(state.base, state.to, updateStateRate)
 
     function updateStateRate (data) {
-      var currency = data.valores[state.base];
-      state.rate = formatNumber(currency.valor);
+      var rate = data.rates[state.to];
+      state.rate = formatNumber(rate);
       state.rate_payoneer = formatNumber(state.rate * 0.98);
-      state.last_quote = formatDate(timestampToDate(currency.ultima_consulta));
+      state.last_quote = data.date;
 
       localforage.setItem(dbKeys.rates, state);
       updateRatesUi(state);
@@ -126,8 +126,8 @@
     }
   }
 
-  function apiUrl (base) {
-    return API_RATE + '?alt=json&moedas=' + state.base;
+  function apiUrl (base, to) {
+    return API_RATE + '?base=' + base + '&symbols=' + to;
   }
 
   function formatNumber (number) {
