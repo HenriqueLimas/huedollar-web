@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var API_RATE = 'https://api.fixer.io/latest';
+  var API_RATE = 'https://huedollar-api.herokuapp.com/rates';
   var state = {
     base: 'USD',
     to: 'BRL',
@@ -114,10 +114,10 @@
     fetchFromNetworkRate(state.base, state.to, updateStateRate)
 
     function updateStateRate (data) {
-      var rate = data.rates[state.to];
-      state.rate = formatNumber(rate);
+      var rate = data.valores[state.base];
+      state.rate = formatNumber(rate.valor);
       state.rate_payoneer = formatNumber(state.rate * 0.98);
-      state.last_quote = data.date;
+      state.last_quote = formatDate(timestampToDate(rate.ultima_consulta));
 
       localforage.setItem(dbKeys.rates, state);
       updateRatesUi(state);

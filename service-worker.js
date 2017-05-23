@@ -1,5 +1,5 @@
-var cacheName = 'huedollar-v1';
-var dataCacheName = 'data-huedollar-v1';
+var cacheName = 'huedollar-v2';
+var dataCacheName = 'data-huedollar-v2';
 
 var filesToCache = [
   'index.html',
@@ -9,7 +9,7 @@ var filesToCache = [
 ];
 
 
-var rateAPIUrlBase = 'https://api.fixer.io/latest';
+var rateAPIUrlBase = 'https://huedollar-api.herokuapp.com/rates';
 
 self.addEventListener('install', function (e) {
   console.log('[ServiceWorker] Install');
